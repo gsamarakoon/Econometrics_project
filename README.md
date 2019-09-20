@@ -1,7 +1,7 @@
 # Econometrics_project
 
 
-This project looks at US National Housing Index data over time (
+This project looks at US National Housing Index data over time.
 We apply and fit some basic time-series model to observe the nature of the data.
 
 
