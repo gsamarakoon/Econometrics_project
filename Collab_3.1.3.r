@@ -4,14 +4,15 @@ library(stats)
 library(tseries)
 library(forecast)
 library(tidyquant)
+library(ggfortify)
 
-
-DF <- read_excel(path = "Econometrics/M3_univariate_time_series_models/CSUSHPINSA.xlsx") %>% 
+DF <- read_excel(path = "C:/Users/samar/Downloads/CSUSHPINSA.xlsx") %>% 
     
     rename(us_home_price_index = CSUSHPINSA,
            date = DATE)
-
+plot
 # Exploratory
+
 plot <- DF %>% 
 ggplot(aes(x = date, y = us_home_price_index)) +
 geom_line() +
@@ -35,9 +36,11 @@ acf_results <- acf(DF_ts)
 pacf_results <- pacf(DF_ts)
 adf_results <- adf.test(DF_ts)
 
+
 acf_results
 pacf_results
 adf_results
+
 
 # fit a simple AR model with 12 lags, no differencing, no moving average terms - i.e. an ARIMA(12,0,0) model:
     AR_model1 <- arima(window(DF_ts,start=1987),
@@ -51,6 +54,20 @@ ARIMA_model <- arima(window(DF_ts,start=1987),
                      order=c(12,2,2), method = "ML")
 summary(ARIMA_model)
 Box.test(ARIMA_model$residuals, lag = 12)
+
+ 
+predictive_model <- auto.arima(window(DF_ts, start=1987), stationary = TRUE, trace = TRUE)
+predictive_non_stationary <- auto.arima(window(DF_ts, start=1987), trace = TRUE)
+
+predictive_model
+predictive_non_stationary
+ggtsdiag(predictive_non_stationary)
+
+Box.test(predictive_non_stationary$residuals, lag = 3)
+
+checkresiduals(predictive_non_stationary)
+fr<- forecast::forecast(predictive_non_stationary)
+plot(fr)
 
 #3 Forecast the future evolution of Case-Shiller Index using the ARMA model. Test model using in-sample forecasts
 
