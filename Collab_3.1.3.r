@@ -42,13 +42,13 @@ pacf_results
 adf_results
 
 
+
+
+#2 Implement an ARIMA(p,d,q) model. Determine p, d, q using Information Criterion or Box-Jenkins methodology. Comment results
 # fit a simple AR model with 12 lags, no differencing, no moving average terms - i.e. an ARIMA(12,0,0) model:
     AR_model1 <- arima(window(DF_ts,start=1987),
                        order=c(12,0,0), method = "ML")
 summary(AR_model1)
-
-#2 Implement an ARIMA(p,d,q) model. Determine p, d, q using Information Criterion or Box-Jenkins methodology. Comment results
-
 # ARIMA (12,2,2)
 ARIMA_model <- arima(window(DF_ts,start=1987),
                      order=c(12,2,2), method = "ML")
@@ -66,21 +66,11 @@ ggtsdiag(predictive_non_stationary)
 Box.test(predictive_non_stationary$residuals, lag = 3)
 
 checkresiduals(predictive_non_stationary)
+
+#3 Forecast the future evolution of Case-Shiller Index using the ARMA model. Test model using in-sample forecasts
 fr<- forecast::forecast(predictive_non_stationary)
 plot(fr)
 
-#3 Forecast the future evolution of Case-Shiller Index using the ARMA model. Test model using in-sample forecasts
-
-# This part taking from the compiled notes, code isn't working
-AR_model <- ar(window(DF_ts,start=1987),
-               order=12,method = "mle")
-AR_forecast <- predict(AR_model,n.ahead= 72,se.fit=TRUE)
-plot(window(DF_ts, start=1987),
-     lines(AR_forecast$pred,col="blue"),
-     lines(AR_forecast$pred+2*AR_forecast$se,col="cornflowerblue",lty =
-               "dashed"),
-     lines(AR_forecast$pred-2*AR_forecast$se,col="cornflowerblue",lty =
-               "dashed"))
 #4 Suggest exogenous variables that can improve forecasts
 #Interest rates, unemployment rates, National GDP, Global GDP, Gold prices, Inflation rates, population growth
 #Disposable income levels, rental rates, Momentum, Shadow Inventory change
